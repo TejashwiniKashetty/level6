@@ -15,7 +15,7 @@
       "prettier --write ."
     ]
   },
-  "author": "Shireen Mohammad <shireenmd402@gmail.com>",
+  "author": "tejashwini kashetty <kashettytejashwini@gmail.com>",
   "license": "ISC",
   "dependencies": {
     "ejs": "^3.1.8",

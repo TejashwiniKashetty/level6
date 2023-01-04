@@ -9,17 +9,10 @@ const path = require("path");
 app.set("view engine", "ejs");
 
 app.get("/", async (request, response) => {
-  const overdueTodos = await Todo.getOverdueTodos();
-  const dueTodayTodos = await Todo.getDueTodayTodos();
-  const dueLaterTodos = await Todo.getDueLaterTodos();
-  const todosCount = await Todo.getTodosCount();
-
+  const allTodos = await Todo.getTodos();
   if (request.accepts("html")) {
     response.render("index", {
-      overdueTodos,
-      dueTodayTodos,
-      dueLaterTodos,
-      todosCount,
+      allTodos,
     });
   } else {
     response.json({
@@ -30,12 +23,16 @@ app.get("/", async (request, response) => {
 
 app.use(express.static(path.join(__dirname, "public")));
 
+/* Sequelize-cli(Without UI) endpoints/route using express.js: */
+// app.get("/", function (request, response) {
+//   response.send("Hello World");
+// });
+
 app.get("/todos", async function (_request, response) {
   console.log("Processing list of all Todos ...");
-
   try {
-    const todos = await Todo.findAll({ order: [["id", "ASC"]] });
-    return response.json(todos);
+    const todosList = await Todo.findAll();
+    return response.send(todosList);
   } catch (error) {
     console.log(error);
     return response.status(422).json(error);
@@ -75,9 +72,19 @@ app.put("/todos/:id/markAsCompleted", async function (request, response) {
 
 app.delete("/todos/:id", async function (request, response) {
   console.log("We have to delete a Todo with ID: ", request.params.id);
-
-  const affectedRow = await Todo.destroy({ where: { id: request.params.id } });
-  response.send(affectedRow ? true : false);
+  const todo = await Todo.findByPk(request.params.id);
+  try {
+    if (todo === null) return response.send(false);
+    else {
+      const deletedTodosCount = await todo.destroy({
+        where: { id: request.params.id },
+      });
+      return response.json(true);
+    }
+  } catch (error) {
+    console.log(error);
+    return response.status(422).json(error);
+  }
 });
 
 module.exports = app;

@@ -1,5 +1,8 @@
-"use strict";
-const { Model, Op } = require("sequelize");
+'use strict';
+const { response } = require('express');
+const {
+  Model
+} = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class Todo extends Model {
     /**
@@ -10,84 +13,25 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
     }
+    static addTodo({title,dueDate}){
+      return this.create({title:title,dueDate:dueDate,completed:false})
+    }
 
-    static getTodos() {
+    static getTodos(){
       return this.findAll();
     }
 
-    static getOverdueTodos() {
-      const formattedDate = (d) => {
-        return d.toISOString().split("T")[0];
-      };
-
-      const dateToday = new Date();
-      const today = formattedDate(dateToday);
-
-      return this.findAll({
-        where: {
-          dueDate: {
-            [Op.lt]: today,
-          },
-        },
-      });
-    }
-
-    static getDueTodayTodos() {
-      const formattedDate = (d) => {
-        return d.toISOString().split("T")[0];
-      };
-
-      const dateToday = new Date();
-      const today = formattedDate(dateToday);
-
-      return this.findAll({
-        where: {
-          dueDate: {
-            [Op.eq]: today,
-          },
-        },
-      });
-    }
-
-    static getDueLaterTodos() {
-      const formattedDate = (d) => {
-        return d.toISOString().split("T")[0];
-      };
-
-      const dateToday = new Date();
-      const today = formattedDate(dateToday);
-
-      return this.findAll({
-        where: {
-          dueDate: {
-            [Op.gt]: today,
-          },
-        },
-      });
-    }
-
-    static getTodosCount() {
-      return this.count();
-    }
-
-    static addTodo({ title, dueDate }) {
-      return this.create({ title: title, dueDate: dueDate, completed: false });
-    }
-
-    markAsCompleted() {
-      return this.update({ completed: true });
+    markedAsCompleted(){
+      return this.update({completed:true})
     }
   }
-  Todo.init(
-    {
-      title: DataTypes.STRING,
-      dueDate: DataTypes.DATEONLY,
-      completed: DataTypes.BOOLEAN,
-    },
-    {
-      sequelize,
-      modelName: "Todo",
-    }
-  );
+  Todo.init({
+    title: DataTypes.STRING,
+    dueDate: DataTypes.DATEONLY,
+    completed: DataTypes.BOOLEAN
+  }, {
+    sequelize,
+    modelName: 'Todo',
+  });
   return Todo;
 };
