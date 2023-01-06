@@ -1,21 +1,15 @@
 {
-  "name": "todo-manager-sh",
+  "name": "todo-manager",
   "version": "1.0.0",
-  "description": "Todo manager App using Node.js and Express.",
+  "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
+    "start": "nodemon -e js,ejs",
     "start:prod": "node index.js",
-    "test": "jest",
-    "prepare": "husky install"
+    "pretest": "NODE_ENV=test npx sequelie-cli db:drop && NODE_ENV=test npx sequelize db:create",
+    "test": "NODE_ENV=test jest --detectOpenHandles"
   },
-  "lint-staged": {
-    "*.js": [
-      "eslint",
-      "prettier --write ."
-    ]
-  },
-  "author": "tejashwini kashetty <kashettytejashwini@gmail.com>",
+  "author": "Ranga Vardhan <rangavardhangamasu@gmail.com>",
   "license": "ISC",
   "dependencies": {
     "ejs": "^3.1.8",
@@ -25,15 +19,16 @@
     "sequelize": "^6.25.8"
   },
   "devDependencies": {
-    "eslint": "^8.28.0",
+    "eslint": "^8.30.0",
     "eslint-config-standard": "^17.0.0",
     "eslint-plugin-import": "^2.26.0",
-    "eslint-plugin-n": "^15.5.1",
+    "eslint-plugin-n": "^15.6.0",
     "eslint-plugin-promise": "^6.1.1",
     "husky": "^8.0.2",
     "jest": "^29.3.1",
+    "lint-staged": "^13.1.0",
     "nodemon": "^2.0.20",
-    "prettier": "^2.8.0",
+    "prettier": "^2.8.1",
     "sequelize-cli": "^6.5.2",
     "supertest": "^6.3.1"
   }
